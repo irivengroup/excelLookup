@@ -40,9 +40,9 @@ Les feuilles ne sont plus conservées intégralement en mémoire.
 python -m pip install --user --upgrade pip setuptools wheel
 python -m pip install . --no-build-isolation
 
-python -m excel_host_lookup inventory.xlsx "srv01,srv02;srv03|srv04 srv05"
-python -m excel_host_lookup inventory.xlsx hosts.txt
-python -m excel_host_lookup inventory.xlsx --hosts-excel recherche.xlsx
+python -m xlslookup inventory.xlsx "srv01,srv02;srv03|srv04 srv05"
+python -m xlslookup inventory.xlsx hosts.txt
+python -m xlslookup inventory.xlsx --hosts-excel recherche.xlsx
 ```
 
 Séparateurs : `, ; | espace`.
@@ -116,7 +116,7 @@ The application uses **Python standard library only at runtime** and processes `
 XlsWhisper follows a lightweight layered architecture:
 
 ```text
-src/excel_host_lookup/
+src/xlslookup/
 │
 ├── cli.py
 ├── models.py
@@ -249,7 +249,7 @@ Comments beginning with `#` are ignored.
 Example:
 
 ```powershell
-python -m excel_host_lookup inventory.xlsx "srv01,srv02;srv03|srv04 srv05"
+python -m xlslookup inventory.xlsx "srv01,srv02;srv03|srv04 srv05"
 ```
 
 All of the following separators are accepted:
@@ -329,7 +329,7 @@ excel-host-lookup --help
 Alternatively:
 
 ```powershell
-python -m excel_host_lookup --help
+python -m xlslookup --help
 ```
 
 ---
@@ -345,7 +345,7 @@ excel-host-lookup inventory.xlsx hosts.txt
 Example:
 
 ```powershell
-python -m excel_host_lookup inventory.xlsx hosts.txt
+python -m xlslookup inventory.xlsx hosts.txt
 ```
 
 ---
@@ -759,7 +759,7 @@ Clone or obtain the project source and work from the project directory.
 Run the application directly from the source tree:
 
 ```powershell
-python -m excel_host_lookup --help
+python -m xlslookup --help
 ```
 
 Run the test suite:
@@ -782,7 +782,7 @@ XlsWhisper/
 ├── .gitignore
 │
 ├── src/
-│   └── excel_host_lookup/
+│   └── xlslookup/
 │       ├── __init__.py
 │       ├── __main__.py
 │       ├── models.py
