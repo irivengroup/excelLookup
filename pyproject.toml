@@ -1,45 +1,19 @@
 [build-system]
-requires = ["hatchling>=1.27"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "excel-host-lookup"
-version = "1.0.0"
-description = "Local hostname, IPv4 and FQDN lookup from multi-sheet Excel inventories"
-requires-python = ">=3.11"
-dependencies = [
-    "pandas>=2.2,<3",
-    "openpyxl>=3.1,<4",
-]
-
-[project.optional-dependencies]
-xls = ["xlrd>=2.0,<3"]
-dev = [
-    "pytest>=8.3,<9",
-    "pytest-cov>=5,<7",
-    "ruff>=0.12,<1",
-    "mypy>=1.17,<2",
-    "bandit>=1.8,<2",
-]
+name = "xlswhisper"
+version = "2.2.0"
+description = "Robust multi-sheet XLSX host/IP lookup utility"
+requires-python = ">=3.10"
+dependencies = []
 
 [project.scripts]
-excel-host-lookup = "excel_host_lookup.cli:main"
+xlslookup = "xlswhisper.cli:main"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/excel_host_lookup"]
+[tool.setuptools]
+package-dir = {"" = "src"}
 
-[tool.ruff]
-line-length = 88
-target-version = "py311"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "SIM", "C4"]
-
-[tool.mypy]
-python_version = "3.11"
-strict = true
-ignore_missing_imports = true
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-q --strict-markers"
+[tool.setuptools.packages.find]
+where = ["src"]

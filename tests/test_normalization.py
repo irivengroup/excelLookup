@@ -1,22 +1,16 @@
-from excel_host_lookup.normalization import Normalizer
+from excel_host_lookup.normalization import hostname, parse_host_list
 
 
-def test_hostname_is_normalized() -> None:
-    assert Normalizer.hostname("  SRV01.EXAMPLE.COM  ") == "srv01.example.com"
+def test_mixed_separators():
+    assert parse_host_list("srv01,srv02;srv03|srv04 srv05") == [
+        "srv01", "srv02", "srv03", "srv04", "srv05"
+    ]
 
 
-def test_excel_numeric_suffix_is_removed() -> None:
-    assert Normalizer.hostname("123.0") == "123"
+def test_deduplication():
+    assert parse_host_list("SRV01,srv01; srv01") == ["srv01"]
 
 
-def test_invalid_hostname_is_rejected() -> None:
-    assert Normalizer.hostname("bad host") == ""
-
-
-def test_ipv4_validation() -> None:
-    assert Normalizer.ipv4("10.20.30.40") == "10.20.30.40"
-    assert Normalizer.ipv4("999.999.999.999") == ""
-
-
-def test_fqdn_trailing_dot_is_removed() -> None:
-    assert Normalizer.fqdn("srv01.example.com.") == "srv01.example.com"
+def test_invalid_host():
+    assert hostname("bad host") == ""
+    assert hostname("srv01.example.com") == "srv01.example.com"

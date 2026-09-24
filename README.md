@@ -1,106 +1,60 @@
-# Excel Host Lookup
+# excel-host-lookup 2.2.0
 
-Recherche locale de `Hostname -> IPv4 + FQDN` dans un classeur Excel multi-feuilles.
+Outil robuste de recherche de hosts dans des classeurs `.xlsx` multi-feuilles, **sans bibliothèque Python externe**.
 
-## Fonctionnement
+## 2.2 — traitement mémoire maîtrisé
 
-- détecte automatiquement les colonnes Hostname, IP et DNS Name/FQDN ;
-- accepte un fichier texte de hosts à rechercher ;
-- conserve les doublons et signale les conflits IP/FQDN ;
-- produit un CSV par feuille ;
-- supprime les espaces des noms de feuilles dans les noms de fichiers ;
-- produit aussi un CSV global ;
-- aucun accès réseau n'est effectué.
+Le lecteur XLSX traite maintenant les feuilles avec `xml.etree.ElementTree.iterparse()` directement sur le flux ZIP au lieu de charger tout le XML d'une feuille en mémoire.
 
-## Installation
-
-```bash
-python -m venv .venv
-# Linux/macOS
-source .venv/bin/activate
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
-
-python -m pip install -U pip
-python -m pip install -e ".[dev,xls]"
-```
-
-`xls` est nécessaire uniquement pour les anciens fichiers `.xls`.
-
-## Utilisation
-
-Avec détection automatique du premier Excel :
-
-```bash
-excel-host-lookup hosts.txt
-```
-
-Avec fichiers explicites :
-
-```bash
-excel-host-lookup inventory.xlsx hosts.txt
-```
-
-Répertoire de sortie :
-
-```bash
-excel-host-lookup inventory.xlsx hosts.txt --output-dir results
-```
-
-Sans fichier hosts, tous les hostnames détectés dans l'Excel sont recherchés :
-
-```bash
-excel-host-lookup inventory.xlsx
-```
-
-## Format hosts.txt
+Le traitement est donc :
 
 ```text
-srv-app-01
-srv-db-01
-srv-web-01.example.com
-# commentaire
+XLSX
+ └── ZIP
+      └── feuille XML
+           └── ligne par ligne
+                └── index / recherche
 ```
 
-Les lignes vides et commentaires sont ignorés.
+Les feuilles ne sont plus conservées intégralement en mémoire.
+
+### Sécurité et robustesse
+
+- Python standard library uniquement ;
+- `.xlsx` uniquement ;
+- validation ZIP ;
+- refus des chemins absolus et traversal ;
+- limites de taille comprimée/non comprimée ;
+- limite de ratio de compression pour réduire le risque de ZIP bomb ;
+- XML traité en streaming ;
+- limites feuilles/lignes/colonnes/cellules ;
+- validation hostname/FQDN/IPv4 ;
+- déduplication contrôlée de l'index ;
+- conservation des occurrences de recherche ;
+- CSV écrit en streaming ;
+- aucune macro, formule ou connexion réseau exécutée.
+
+## Entrées
+
+```bash
+python -m excel_host_lookup inventory.xlsx "srv01,srv02;srv03|srv04 srv05"
+python -m excel_host_lookup inventory.xlsx hosts.txt
+python -m excel_host_lookup inventory.xlsx --hosts-excel recherche.xlsx
+```
+
+Séparateurs : `, ; | espace`.
 
 ## Sorties
 
-Pour les feuilles :
-
 ```text
-Production Servers
-Database
+results/
+├── LISTE.csv
+├── RESULTATS.csv
+└── SOURCES.csv
 ```
 
-les fichiers deviennent :
+Pour un Excel de recherche multi-feuilles, un CSV est produit par feuille.
 
-```text
-inventory_ProductionServers.csv
-inventory_Database.csv
-inventory_RESULTATS.csv
-```
+## Limites
 
-Colonnes :
-
-```text
-Hostname
-IP_Trouvee
-FQDN_Trouve
-Statut
-Conflit_IP
-Conflit_FQDN
-Sources
-```
-
-`Statut` vaut `OK`, `CONFLIT` ou `NON_TROUVE`.
-
-## Validation
-
-```bash
-ruff check .
-ruff format --check .
-mypy src
-bandit -r src
-pytest --cov=excel_host_lookup --cov-report=term-missing
-```
+Les limites sont centralisées dans `limits.py`. Elles sont volontairement conservatrices et peuvent être adaptées à l'environnement.
