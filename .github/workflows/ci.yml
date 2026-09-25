@@ -22,7 +22,7 @@ jobs:
       - run: pip install -e ".[dev,xls]"
       - run: python -m pip install --upgrade ruff
 
-      - run: ruff check .
+      - run: ruff check . --fix
       - run: ruff format --check .
       - run: mypy src
       - run: bandit -r src

@@ -3,7 +3,7 @@ from pathlib import Path
 from .detector import ColumnDetector
 from .limits import Limits
 from .models import SearchHost
-from .normalization import hostname, parse_host_list
+from .normalization import parse_host_list
 from .xlsx_reader import XlsxReader
 
 

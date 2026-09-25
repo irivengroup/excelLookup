@@ -1,6 +1,7 @@
 import csv
 import re
 from pathlib import Path
+from typing import ClassVar
 
 from .models import LookupResult
 
@@ -9,10 +10,16 @@ MAX_FILENAME = 180
 
 
 class CsvExporter:
-    HEADER = [
-        "Hostname", "IP_Trouvee", "FQDN_Trouve", "Statut",
-        "Conflit_IP", "Conflit_FQDN", "Sources",
-        "Feuille_Recherche", "Ligne_Recherche",
+    HEADER: ClassVar[list[str]] = [
+        "Hostname",
+        "IP_Trouvee",
+        "FQDN_Trouve",
+        "Statut",
+        "Conflit_IP",
+        "Conflit_FQDN",
+        "Sources",
+        "Feuille_Recherche",
+        "Ligne_Recherche",
     ]
 
     def export(self, results: list[LookupResult], output_dir: Path) -> None:

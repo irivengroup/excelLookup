@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
-from zipfile import BadZipFile, ZipFile
 from xml.etree import ElementTree as ET
-from collections.abc import Iterator
+from zipfile import BadZipFile, ZipFile
 
 from .limits import Limits
 

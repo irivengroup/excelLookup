@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 import re
 import unicodedata
+from dataclasses import dataclass
 
 
 def normalize_header(value: object) -> str:
